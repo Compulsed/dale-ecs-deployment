@@ -64,3 +64,8 @@ Github:
 
 Cdk:
 - Remove the inline compile
+
+
+Steps:
+1. Deploy CDK stack from Github (static image)
+2. Build image

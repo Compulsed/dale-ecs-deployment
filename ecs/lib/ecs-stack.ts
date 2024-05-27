@@ -10,7 +10,7 @@ import {
   OperatingSystemFamily,
   TaskDefinitionRevision,
 } from "aws-cdk-lib/aws-ecs";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { Peer, Port, SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
 import { ApplicationLoadBalancer } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
 export class EcsStack extends cdk.Stack {
@@ -26,19 +26,21 @@ export class EcsStack extends cdk.Stack {
       enableFargateCapacityProviders: true,
     });
 
-    const taskDefinition = new FargateTaskDefinition(this, "TaskDef", {
+    const taskDefinition = new FargateTaskDefinition(this, "WebTask", {
       runtimePlatform: {
         operatingSystemFamily: OperatingSystemFamily.LINUX,
         cpuArchitecture: CpuArchitecture.ARM64,
       },
     });
 
+    // TODO: Inject container id from build hash
     taskDefinition.addContainer("web", {
       image: ContainerImage.fromRegistry(
         "dalesalter/dale-ecs-deployment-api:latest"
       ),
       memoryLimitMiB: 512,
       cpu: 256,
+      // Overrides the default 'dev' mode
       command: ["npm", "start"],
       portMappings: [
         {
@@ -48,6 +50,21 @@ export class EcsStack extends cdk.Stack {
       ],
       logging: LogDriver.awsLogs({ streamPrefix: "web" }),
     });
+
+    // Useful to inspect the individual tasks
+    const httpFromAnyWheresecurityGroup = new SecurityGroup(
+      this,
+      "all-http-sg",
+      {
+        vpc,
+      }
+    );
+
+    httpFromAnyWheresecurityGroup.addIngressRule(
+      Peer.anyIpv4(),
+      Port.tcp(80),
+      "Http from anywhere"
+    );
 
     const service = new FargateService(this, "FargateService", {
       cluster,
@@ -70,7 +87,7 @@ export class EcsStack extends cdk.Stack {
         enable: true,
         rollback: true,
       },
-      securityGroups: [],
+      securityGroups: [httpFromAnyWheresecurityGroup],
     });
 
     const lb = new ApplicationLoadBalancer(this, "LB", {
