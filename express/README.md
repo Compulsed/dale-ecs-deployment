@@ -57,3 +57,10 @@ npm run dev
 
 Docker:
 - Remove dev deps from build (might be done via ci, not sure)
+- Dockerize CDK
+
+Github:
+- OpenID connect
+
+Cdk:
+- Remove the inline compile

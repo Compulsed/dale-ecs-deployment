@@ -3,7 +3,7 @@ services:
   api:
     build: ./express
     ports:
-      - '9000:9000'
+      - '80:80'
     volumes:
       - ./express:/app # bind mount to auto updates
       - /app/node_modules # does not use our host node_modules
