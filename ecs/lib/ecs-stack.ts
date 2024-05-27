@@ -12,6 +12,7 @@ import {
 } from "aws-cdk-lib/aws-ecs";
 import { Peer, Port, SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
 import { ApplicationLoadBalancer } from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import { Repository } from "aws-cdk-lib/aws-ecr";
 
 export class EcsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -35,8 +36,12 @@ export class EcsStack extends cdk.Stack {
 
     // TODO: Inject container id from build hash
     taskDefinition.addContainer("web", {
-      image: ContainerImage.fromRegistry(
-        "dalesalter/dale-ecs-deployment-api:latest"
+      // image: ContainerImage.fromRegistry(
+      //   "dalesalter/dale-ecs-deployment-api:latest"
+      // ),
+      image: ContainerImage.fromEcrRepository(
+        Repository.fromRepositoryName(this, "repo", "dale-ecs-deployment-repo"),
+        "d16c5055c3e5a05b1915e1f9cd1aea200e21c37d"
       ),
       memoryLimitMiB: 512,
       cpu: 256,

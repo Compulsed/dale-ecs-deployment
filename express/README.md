@@ -67,5 +67,6 @@ Cdk:
 
 
 Steps:
-1. Deploy CDK stack from Github (static image)
-2. Build image
+1. Deploy CDK stack from Github (static image) 
+2. Build image, push to ecr ✅
+3. Only do the above on a release tag (generated on merge to main?)
