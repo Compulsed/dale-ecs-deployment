@@ -8,11 +8,17 @@ import {
   FargateTaskDefinition,
   LogDriver,
   OperatingSystemFamily,
-  TaskDefinitionRevision,
 } from "aws-cdk-lib/aws-ecs";
 import { Peer, Port, SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
 import { ApplicationLoadBalancer } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Repository } from "aws-cdk-lib/aws-ecr";
+import {
+  PredefinedMetric,
+  ScalableTarget,
+  ServiceNamespace,
+  TargetTrackingScalingPolicy,
+} from "aws-cdk-lib/aws-applicationautoscaling";
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 export class EcsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -33,6 +39,20 @@ export class EcsStack extends cdk.Stack {
         cpuArchitecture: CpuArchitecture.X86_64,
       },
     });
+
+    // Allow SSM to SSH into the running container
+    taskDefinition.addToTaskRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        resources: ["*"],
+        actions: [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel",
+        ],
+      })
+    );
 
     const image = this.node.tryGetContext("image");
 
@@ -74,15 +94,12 @@ export class EcsStack extends cdk.Stack {
 
     const service = new FargateService(this, "FargateService", {
       cluster,
-      taskDefinition,
-      // Consider if this is required because we update via CFN
       // taskDefinitionRevision: TaskDefinitionRevision.LATEST,
+      // Consider if this is required because we update via CFN
+      taskDefinition,
       // Might be required or else we cannot connect out publically (without a nat gateway) -- this might be required
       //  for dockerhub images?
       assignPublicIp: true,
-      // TODO: How does this impact auto-scaling? -- do we need to do this separately?
-      //  -- https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ecs-readme.html#task-auto-scaling
-      desiredCount: 3,
       capacityProviderStrategies: [
         {
           capacityProvider: "FARGATE",
@@ -94,6 +111,24 @@ export class EcsStack extends cdk.Stack {
         rollback: true,
       },
       securityGroups: [httpFromAnyWheresecurityGroup],
+      enableExecuteCommand: true,
+    });
+
+    const scalableTarget = new ScalableTarget(this, "ScalableTarget", {
+      serviceNamespace: ServiceNamespace.ECS,
+      resourceId: `service/${service.serviceName}/${cluster.clusterName}`,
+      scalableDimension: "ecs:service:DesiredCount",
+      minCapacity: 1,
+      maxCapacity: 10,
+    });
+
+    new TargetTrackingScalingPolicy(this, "ScalingPolicy", {
+      policyName: "CPUUtilizationScalingPolicy",
+      targetValue: 20,
+      scaleOutCooldown: cdk.Duration.seconds(60),
+      scaleInCooldown: cdk.Duration.seconds(60),
+      predefinedMetric: PredefinedMetric.ECS_SERVICE_AVERAGE_CPU_UTILIZATION,
+      scalingTarget: scalableTarget,
     });
 
     const lb = new ApplicationLoadBalancer(this, "LB", {
