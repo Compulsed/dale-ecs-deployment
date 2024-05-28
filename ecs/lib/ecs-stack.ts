@@ -41,7 +41,7 @@ export class EcsStack extends cdk.Stack {
       // ),
       image: ContainerImage.fromEcrRepository(
         Repository.fromRepositoryName(this, "repo", "dale-ecs-deployment-repo"),
-        "latest"
+        "c1a510f7c42604be8c6bab1d4b4dad64e3437d8c"
       ),
       memoryLimitMiB: 512,
       cpu: 256,
