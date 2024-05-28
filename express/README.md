@@ -66,7 +66,8 @@ Cdk:
 - Remove the inline compile
 
 
-Steps:
-1. Deploy CDK stack from Github (static image) 
-2. Build image, push to ecr ✅
-3. Only do the above on a release tag (generated on merge to main?)
+# What is missing:
+- Release tag deployments (push button)
+- Unit tests
+- Secrets management
+- Database

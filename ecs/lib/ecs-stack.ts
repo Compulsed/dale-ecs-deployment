@@ -34,14 +34,15 @@ export class EcsStack extends cdk.Stack {
       },
     });
 
-    // TODO: Inject container id from build hash
+    const image = this.node.tryGetContext("image");
+
     taskDefinition.addContainer("web-new", {
       // image: ContainerImage.fromRegistry(
       //   "dalesalter/dale-ecs-deployment-api:latest"
       // ),
       image: ContainerImage.fromEcrRepository(
         Repository.fromRepositoryName(this, "repo", "dale-ecs-deployment-repo"),
-        "c1a510f7c42604be8c6bab1d4b4dad64e3437d8c"
+        image
       ),
       memoryLimitMiB: 512,
       cpu: 256,

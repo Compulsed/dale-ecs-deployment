@@ -12,6 +12,7 @@ COPY . .
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ARG AWS_REGION
+ARG IMAGE
 
 #Install AWS CLI
 RUN apt-get update && \
@@ -29,4 +30,4 @@ RUN pip3 --no-cache-dir install --upgrade awscli --break-system-packages
 RUN aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
 RUN aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
 
-RUN npx cdk deploy 
+RUN npx cdk deploy --context image=$IMAGE
