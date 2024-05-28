@@ -1,4 +1,7 @@
-FROM node:20
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023
+
+# TODO: Lock down node version
+RUN dnf install -y nodejs
 
 WORKDIR /app
 

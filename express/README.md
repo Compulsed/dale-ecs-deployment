@@ -67,11 +67,15 @@ Cdk:
 
 
 # What is missing:
-- Release tag deployments (push button)
-- Unit tests
-- Secrets management
-- Database
+- Unit tests ✅
 - Automated scaling policy
+  - Specifically called this out
+- Secrets management
+  - Perhaps could improve this via a multi-stage
+- Release tag deployments (push button)
+  - How to safely avoid re-running unit test / integration tests (using consistent hashes across merges...?)
+- Database
+  - Could use neon to create a DB per stage
 - Environments (though, should be easy as they're just changes to the stack name)
 
 
