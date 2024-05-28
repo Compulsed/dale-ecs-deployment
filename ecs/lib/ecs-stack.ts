@@ -75,7 +75,7 @@ export class EcsStack extends cdk.Stack {
       cluster,
       taskDefinition,
       // Consider if this is required because we update via CFN
-      taskDefinitionRevision: TaskDefinitionRevision.LATEST,
+      // taskDefinitionRevision: TaskDefinitionRevision.LATEST,
       // Might be required or else we cannot connect out publically (without a nat gateway) -- this might be required
       //  for dockerhub images?
       assignPublicIp: true,
