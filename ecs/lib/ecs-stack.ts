@@ -30,7 +30,7 @@ export class EcsStack extends cdk.Stack {
     const taskDefinition = new FargateTaskDefinition(this, "WebTask", {
       runtimePlatform: {
         operatingSystemFamily: OperatingSystemFamily.LINUX,
-        cpuArchitecture: CpuArchitecture.X86_64,
+        cpuArchitecture: CpuArchitecture.ARM64,
       },
     });
 
