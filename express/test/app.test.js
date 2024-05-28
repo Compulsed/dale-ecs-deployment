@@ -8,7 +8,7 @@ describe("app", () => {
       .get("/what-is-this-even")
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(405, done);
+      .expect(404, done);
   });
 });
 
