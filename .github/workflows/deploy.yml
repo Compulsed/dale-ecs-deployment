@@ -54,5 +54,5 @@ jobs:
             --build-arg AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }} \
             --build-arg AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }} \
             --build-arg AWS_REGION=${{ env.AWS_REGION }} \
-            --build-arg IMAGE=${{ env.IMAGE }}
+            --build-arg IMAGE=${{ env.IMAGE }} \
             .
