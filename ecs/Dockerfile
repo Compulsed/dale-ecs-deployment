@@ -21,10 +21,10 @@ RUN apt-get update && \
     python3-setuptools \
     groff \
     less \
-    && pip3 install --upgrade pip \
+    && pip3 install --upgrade --break-system-packages pip \
     && apt-get clean
 
-RUN pip3 --no-cache-dir install --upgrade awscli
+RUN pip3 --no-cache-dir install --upgrade awscli --break-system-packages
 
 RUN aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
 RUN aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
