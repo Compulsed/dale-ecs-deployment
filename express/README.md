@@ -71,4 +71,9 @@ Cdk:
 - Unit tests
 - Secrets management
 - Database
+- Automated scaling policy
 - Environments (though, should be easy as they're just changes to the stack name)
+
+
+# Learnings:
+- Use ECS patterns
