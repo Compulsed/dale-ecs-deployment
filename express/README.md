@@ -71,3 +71,4 @@ Cdk:
 - Unit tests
 - Secrets management
 - Database
+- Environments (though, should be easy as they're just changes to the stack name)
