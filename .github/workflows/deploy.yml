@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: dale-ecs-deployment-repo-public
+  ECR_REPOSITORY: dale-ecs-deployment-repo
 
 jobs:
   deploy:

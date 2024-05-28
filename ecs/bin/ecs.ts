@@ -5,6 +5,6 @@ import { EcsStack } from "../lib/ecs-stack";
 
 const app = new cdk.App();
 
-new EcsStack(app, "EcsStack4", {
+new EcsStack(app, "EcsStack5", {
   env: { account: "974343573363", region: "us-east-1" },
 });

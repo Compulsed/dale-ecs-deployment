@@ -1,5 +1,5 @@
 
-FROM node:20
+FROM --platform= node:20
 
 WORKDIR /app
 
