@@ -116,7 +116,7 @@ export class EcsStack extends cdk.Stack {
 
     const scalableTarget = new ScalableTarget(this, "ScalableTarget", {
       serviceNamespace: ServiceNamespace.ECS,
-      resourceId: `service/${service.serviceName}/${cluster.clusterName}`,
+      resourceId: `service/${cluster.clusterName}/${service.serviceName}`,
       scalableDimension: "ecs:service:DesiredCount",
       minCapacity: 1,
       maxCapacity: 10,
